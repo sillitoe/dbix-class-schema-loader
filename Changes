@@ -1,6 +1,7 @@
 Revision history for Perl extension DBIx::Class::Schema::Loader
 
         - Fix 'default now()' test for PostgreSQL v10
+        - Support identity columns in PostgreSQL v10
 
 0.07047  2017-05-26
         - Avoid upcoming DBIC warning on implicit SELECT * invocation

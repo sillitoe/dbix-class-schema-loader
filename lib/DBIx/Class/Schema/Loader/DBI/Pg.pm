@@ -309,6 +309,19 @@ EOF
             }
         }
 
+        if ($self->dbh->{pg_server_version} >= 100000) {
+            my $identity = $self->schema->storage->dbh->selectrow_array(<<'EOF', {}, $table->sql_name, $col);
+SELECT attidentity
+  FROM pg_catalog.pg_attribute
+ WHERE attrelid = ?::regclass
+   AND attname = ?
+EOF
+            if ($identity) {
+                $info->{is_auto_increment} = 1;
+                $info->{extra}{generated_as_identity} = { a => 'always', 'd' => 'by_default' }->{$identity};
+            }
+        }
+
         if (ref($info->{default_value}) eq 'SCALAR') {
             # process SERIAL columns
             if (${ $info->{default_value} } =~ /\bnextval\('([^:]+)'/i) {
